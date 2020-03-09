@@ -1,0 +1,121 @@
+import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
+
+
+public class Pug extends Actor
+{
+    private boolean jumping;
+    private int jumpStrength = 17;
+    private int vSpeed  = 0;
+    private int direction = 1;
+    private int acceleration = 2;
+    private int verticalSpeed = 0;
+    private int movementSpeed = 5;
+    private int frame = 1;
+    private int animationCountRight = 0;
+    private int animationCountLeft = 0;
+    private int shootingCounter = 0;
+    private int hitTime = 0;
+    private int fallAcceleration = 1;
+    
+    
+    private GreenfootImage jump_right = new GreenfootImage("pug.png");
+    private GreenfootImage jump_left = new GreenfootImage("pug.png");
+    
+    private GreenfootImage jumpShoot_right = new GreenfootImage("pug.png");
+    private GreenfootImage jumpShoot_left = new GreenfootImage("pug.png");
+    public void act() 
+    {
+        checkFall();
+        if(Greenfoot.isKeyDown("right")){
+            setLocation(getX()+5, getY());
+        }
+        
+        if(Greenfoot.isKeyDown("left")){
+            setLocation(getX()-5, getY());
+        }
+        
+        
+    }
+    
+    public void fall()
+    {
+       setLocation(getX(), getY() + vSpeed);
+       vSpeed = vSpeed + acceleration;
+       
+    }
+    
+    public boolean onGround()
+    {
+        int sriteHeight = getImage().getHeight();
+        int lookForGround = (int)(sriteHeight/2) + 5;
+        Actor ground = getOneObjectAtOffset(0,lookForGround,Ground.class);
+        if(ground == null)
+        {
+            return false;
+        }
+        else
+        {
+            moveToGround(ground);
+        return true;
+        }
+            
+    }
+    
+    public void moveToGround(Actor ground)
+    {
+        int groundHeight = ground.getImage().getHeight();
+        int newY = ground.getY() - (groundHeight + getImage().getHeight())/2;
+        setLocation(getX(), newY);
+    }
+    
+ 
+    public void checkFall()
+    {
+        if(onGround())
+        {
+            vSpeed = 0;
+        }
+        else
+        {
+            fall();
+        }
+    }
+    
+    public void moveRight(){
+        setLocation(getX() + movementSpeed, getY());
+        
+        if(jumping != true){
+           if(animationCountRight % 6 == 0){
+              // runRight();
+           } 
+        } 
+    }
+    
+    public void keyPressed(){
+        if(Greenfoot.isKeyDown("space") && jumping == false){
+            jump();
+        }
+        
+        if(Greenfoot.isKeyDown("right")){
+            moveRight();
+            direction = 1;
+       }
+        
+        if(Greenfoot.isKeyDown("left")){
+            direction = -1;
+           // moveLeft();
+        }
+    }
+    
+    public void jump(){
+       if(direction == 1)
+            setImage(jump_right);
+            
+       if(direction == -1)
+            setImage(jump_left);
+        
+        verticalSpeed = verticalSpeed - jumpStrength;
+        jumping = true;
+        fall();
+    }
+}
